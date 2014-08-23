@@ -126,6 +126,73 @@ def generateRevealedBoxesData(val):
 def getRandomizedBoard():
     icons = []
     for color in AllCOLORS:
+        for shape in ALLSHAPES:
+            icons.append((shape,color))
+
+    random.shuffle(icons)
+    numIconsUsed = int(BOARDWIDTH * BOARDHEIGHT/2)
+    icons = icons[:numIconsUsed] * 2
+    random.shuffle(icons)
+
+    board = []
+    for x in range(BOARDWIDTH):
+        column = []
+        for y in range(BOARDHEIGHT):
+            column.append(icons[0])
+            del icones[0]
+        board.append(column)
+    return board
+
+def splitIntoGroupsOf(groupSize, theList):
+    result = []
+    for i in range(0, len(theList), groupSize):
+        result.append(theList[i:i+groupSize])
+    return result
+
+def leftTopCoordsOfBox(boxx, boxy):
+    left = boxx * (BOXSIZE + GAPSIZE) + XMARGIN
+    top = boxy * (BOXSIZE + GAPSIZE) + YMARGIN
+    return (left, top)
+
+def getBoxAtPixel(x,y):
+    for boxx in range(BOARDWIDTH):
+        for boxy in range(BOARDHEIGHT):
+            left, top = leftTopCoordsofBox(boxx,boxy)
+            boxRect = pygame.Rect(left, top, BOXSIZE, BOXSIZE)
+            if boxRect.collidepoint(x,y):
+                return (boxx, boxy)
+    return (None,None)
+
+def drawIcon(shape, color, boxx, boxy):
+    quarter = int(BOXSIZE * .25)
+    half = int(BOXSIZE * .5)
+
+    left, top = leftTopCoordsofBox(boxx,boxy)
+
+    if shape == DONUT:
+        pygame.draw.cicle(DISPLAYSURF, color, (left+half, top+half), half-5)
+        pygame.draw.circle(DISPLAYSURF,BGCOLOR,(left+half,top+half),quarter-5)
+    elif shape == SQUARE:
+        pygame.draw.rect(DISPLAYSURF, color, (left+quarter, top+quarter,
+                                               BOXSIZE-half, BOXSIZE-half))
+    elif shape == DIAMOND:
+        pygame.draw.polygon(DISPLAYSURF, color, ((left+half,top),
+                                                 (left+BOXSIZE-1,top+half),
+                                                 (left+half,top+BOXSIZE-1),
+                                                 (left, top+half)))
+    elif shape == LINES:
+        for i in range(0,BOXSIZE,4):
+            pygame.draw.line(DISPLAYSURF, color, (left,top+i),(left+i,top))
+            pygame.draw.line(DISPLAYSURF, color, (left+i,top+BOXSIZE-1),(left+BOXSIZE-1,top+i))
+
+    elif shape == OVAL:
+        pygame.draw.ellipse(DISPLAYSURF, color, (left, top+quarter, BOXSIZE, half))
+
+#def getShapeAndColor(board, boxx, boxy):
+#    return (board[boxx][boxy][[0], board[boxx][boxy][1])
+
+def drawBoxCovers(board, boxes, coverage):
+    for box in boxes:
+        left, top = leftTopCoordsofBox(box[0], box[1])
 
 
-        
