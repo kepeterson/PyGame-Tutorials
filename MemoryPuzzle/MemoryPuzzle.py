@@ -1,2 +1,16 @@
 import random, pygame, sys
 from pygame.locals import *
+
+FPS = 30
+WINDOWWIDTH = 640
+WINDOWHEIGHT = 480
+REVEALSPEED = 8
+BOXSIZE = 40
+GAPSIZE = 10
+BOARDWIDTH = 10
+BOARDHEIGHT = 7
+assert (BOARDWIDTH * BOARDHEIGHT) % 2 == 0, 'Need even number of Tiles'
+XMARGIN = int((WINDOWWIDTH - (BOARDWIDTH * (BOXSIZE + GAPSIZE)))/2)
+YMARGIN = int((WINDOWHEIGHT - (BOARDHEIGHT * (BOXSIZE + GAPSIZE)))/2)
+
+GRAY = (100,100,100)
