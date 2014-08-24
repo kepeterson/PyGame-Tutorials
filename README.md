@@ -1,4 +1,4 @@
 Python-Tutorials
 ================
 
-Python Tutorials
+Practice with Python and git
