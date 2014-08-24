@@ -81,23 +81,22 @@ def main():
                     revealBoxesAnimation(mainBoard, [(boxx,boxy)])
                     revealedBoxes[boxx][boxy] = True
                     if firstSelection == None:
-                        firstSelect = (boxx, boxy)
+                        firstSelection = (boxx, boxy)
                     else:
-                        #check for match
-                        icon1shape, icon1color = getShapeandColor(mainboard,
+                        icon1shape, icon1color = getShapeAndColor(mainBoard,
                                                                   firstSelection[0],
                                                                   firstSelection[1])
-                        icon2shape, icon2color = getShapeAndColor(mainboard,
+                        icon2shape, icon2color = getShapeAndColor(mainBoard,
                                                                   boxx,
-                                                                  boxxy)
+                                                                  boxy)
 
                         if icon1shape != icon2shape or icon1color != icon2color:
                             #no match
                             pygame.time.wait(1000)
-                            coverBoxesAnimation(mainboard,
+                            coverBoxesAnimation(mainBoard,
                                                 [(firstSelection[0],firstSelection[1]),
                                                 (boxx,boxy)])
-                            revealedBoxes[firstSelection[0]][firsSlection[1]] = False
+                            revealedBoxes[firstSelection[0]][firstSelection[1]] = False
                             revealedBoxes[boxx][boxy] = False
                         elif hasWon(revealedBoxes):
                             gameWonAnimation(mainBoard)
@@ -109,7 +108,7 @@ def main():
 
                             #show the board momentarily
                             drawBoard(mainBoard, revealedBoxes)
-                            pygame.display.updated()
+                            pygame.display.update()
                             pygame.time.wait(1000)
 
                             startGameAnimation(mainBoard)
