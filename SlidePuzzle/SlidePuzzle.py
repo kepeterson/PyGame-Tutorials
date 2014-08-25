@@ -31,7 +31,7 @@ YMARGIN = int((WINDOWHEIGHT - (TILESIZE*BOARDHEIGHT+(BOARDHEIGHT-1)))/2)
 UP = 'up'
 DOWN = 'down'
 LEFT = 'left'
-RIGHT = 'right
+RIGHT = 'right'
 
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT, RESET_SURF, RESET_RECT, \
@@ -43,12 +43,12 @@ def main():
     pygame.display.set_caption('Slide Puzzle')
     BASICFONT = pygame.font.Font('freesansbold.ttf',BASICFONTSIZE)
 
-    RESET_SURF, RESET_RECT = makeText('Reset', TEXTCOLOR, TILECOLOR,
+    RESET_SURF, RESET_RECT = makeText('Reset', BUTTONTEXTCOLOR, BUTTONCOLOR,
                                       WINDOWWIDTH-120, WINDOWHEIGHT - 90)
-    NEW_SURF, NEW_RECT = makeText('New Game',TEXTCOLOR,TILECOLOR,
+    NEW_SURF, NEW_RECT = makeText('New Game',BUTTONTEXTCOLOR, BUTTONCOLOR,
                                   WINDOWWIDTH-120,WINDOWHEIGHT-60)
 
-    SOLVE_SURF, SOLVE_RECT = makeText('Solve',TEXTCOLOR, TILECOLOR,
+    SOLVE_SURF, SOLVE_RECT = makeText('Solve',BUTTONTEXTCOLOR, BUTTONCOLOR,
                                       WINDOWWIDTH-120, WINDOWHEIGHT-30)
 
     mainBoard, solutionSeq = generateNewPuzzle(80)
@@ -114,7 +114,7 @@ def terminate():
 def checkForQuit():
     for event in pygame.event.get(QUIT):
         terminate()
-    for event in pygame.event.gety(KEYUP):
+    for event in pygame.event.get(KEYUP):
         if event.key == K_ESCAPE:
             terminate()
         pygame.event.post(event)
@@ -144,13 +144,13 @@ def makeMove(board, move):
     blankx, blanky = getBlankPosition(board)
 
     if move == UP:
-        board[blankx][blanky], board[blankx,blanky+1] = board[blankx][blanky+1], board[blankx,blanky] 
+        board[blankx][blanky], board[blankx][blanky+1] = board[blankx][blanky+1], board[blankx][blanky] 
     elif move == DOWN:
-        board[blankx][blanky], board[blankx,blanky-1] = board[blankx][blanky-1], board[blankx,blanky] 
+        board[blankx][blanky], board[blankx][blanky-1] = board[blankx][blanky-1], board[blankx][blanky] 
     elif move == LEFT:
-        board[blankx][blanky], board[blankx+1,blanky] = board[blankx+1][blanky], board[blankx,blanky] 
+        board[blankx][blanky], board[blankx+1][blanky] = board[blankx+1][blanky], board[blankx][blanky] 
     elif move == RIGHT:
-        board[blankx][blanky], board[blankx-1,blanky] = board[blankx-1][blanky], board[blankx,blanky] 
+        board[blankx][blanky], board[blankx-1][blanky] = board[blankx-1][blanky], board[blankx][blanky] 
        
 def isValidMove(board,move):
     blankx, blanky = getBlankPosition(board)
@@ -234,7 +234,7 @@ def slideAnimation(board, direction, message, animationSpeed):
     elif direction == DOWN:
         movex = blankx
         movey = blanky-1
-    elif DIRECTION == RIGHT:
+    elif direction == RIGHT:
         movex = blankx-1
         movey = blanky
     elif direction == LEFT:
@@ -266,7 +266,7 @@ def generateNewPuzzle(numSlides):
     sequence = []
     board = getStartingBoard()
     drawBoard(board, '')
-    pygme.display.update()
+    pygame.display.update()
     pygame.time.wait(500)
     lastMove = None
     for i in range(numSlides):
