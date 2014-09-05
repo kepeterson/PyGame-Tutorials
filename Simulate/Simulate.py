@@ -22,6 +22,7 @@ BLUE         = (  0,   0, 155)
 BRIGHTYELLOW = (255, 255,   0)
 YELLOW       = (155, 155,   0)
 DARKGRAY     = ( 40,  40,  40)
+bgColor = BLACK
 
 XMARGIN = int((WINDOWWIDTH - (2 * BUTTONSIZE) - BUTTONGAPSIZE)/2)
 YMARGIN = int((WINDOWHEIGHT - (2 * BUTTONSIZE) - BUTTONGAPSIZE)/2)
@@ -55,4 +56,127 @@ def main():
     BEEP2 = pygame.mixer.Sound('assets/beep2.ogg')
     BEEP3 = pygame.mixer.Sound('assets/beep3.ogg')
     BEEP4 = pygame.mixer.Sound('assets/beep4.ogg')
-    
+
+    pattern = [] #list that stores the current sequence
+    currentStep = 0
+    lastClickTime = 0
+    score = 0
+
+    waitingForInput = False
+
+    while True: #main game loop
+        clickedButton = None
+
+        DISPLAYSURF.fill(bgColor)
+        drawButtons()
+
+        scoreSurf = BASICFONT.render('Score: '+str(score),1,WHITE)
+        scoreRect = scoreSurf.get_rect()
+        scoreRect.topleft = (WINDOWWIDTH - 100, 10)
+        DISPLAYSURF.blit(scoreSurf, scoreRect)
+
+        DISPLAYSURF.blit(infoSurf, infoRect)
+
+        checkForQuit()
+        for event in pygame.event.get():
+            if event.type == MOUSEBUTTONUP:
+                mousex, mousey = event.pos
+                clickedButton = getButtonClicked(mousex, mousey)
+            elif event.type == KEYDOWN:
+                if event.key == K_q:
+                    clickedButton = YELLOW
+                elif event.key == K_w:
+                    clickedButton = BLUE
+                elif event.key == K_a:
+                    clickedButton = RED
+                elif event.key == K_s:
+                    clickedButton = GREEN
+
+        if not waitingForInput:
+            pygame.display.update()
+            pygame.time.wait(1000)
+            pattern.append(random.choice((YELLOW,BLUE,RED,GREEN)))
+            for button in pattern:
+                flashButtonAnimation(button)
+                pygame.time.wait(FLASHDELAY)
+            waitingForInput = True
+        else:
+            if clickedButton and clickedButton == pattern[currentStep]:
+                flashButtonAnimation(clickedButton)
+                currentStep += 1
+                lastClickTime = time.time()
+
+                if currentStep == len(pattern):
+                    changeBackgroundAnimation()
+                    score += 1
+                    waitingForInput = False
+                    currentStep = 0
+
+            elif (clickedButton and clickedButton != pattern[currentStep]) \
+                 or (currentStep != 0 and time.time() - TIMEOUT > lastClickTime):
+                gameOverAnimation()
+                pattern = []
+                currentStep = 0
+                waitingForInput = False
+                score = 0
+                pygame.time.wait(1000)
+                changeBackgroundAnimation()
+
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def terminate():
+    pygame.quit()
+    sys.exit()
+
+def checkForQuit():
+    for event in pygame.event.get(QUIT):
+        terminate()
+    for event in pygame.event.get(KEYUP):
+        if event.key == K_ESCAPE:
+            terminate()
+        pygame.event.post(event)
+                           
+def flashButtonAnimation(color, animationSpeed=50):
+    if color == YELLOW:
+        sound = BEEP1
+        flashColor = BRIGHTYELLOW
+        rectangle = YELLOWRECT
+    elif color == BLUE:
+        sound = BEEP2
+        flashColor = BRIGHTBLUE
+        rectangle = BLUERECT
+    elif color == RED:
+        sound = BEEP3
+        flashColor = BRIGHTRED
+        rectangle = REDRECT
+    elif color == GREEN:
+        sound = BEEP4
+        flashColor = BRIGHTGREEN
+
+    origSurf = DISPLAYSURF.copy()
+    flashSurf = pygame.Surface((BUTTONSIZE,BUTTONSIZE))
+    flashSurf = flashSurf.convert_alpha()
+    r, g, b = flashColor
+    sound.play()
+    for start, end, step in ((0,255,1),(255,0,-1)):
+        for alpha in range(start, end, animationSpeed * step):
+            checkForQuit()
+            DISPLAYSURF.blit(origSurf,(0,0))
+            flashSurf.fill((r,g,b,alpha))
+            DISPLAYSURF.blit(flashSurf, rectangle.topleft)
+            pygame.display.update()
+            FPSCLOCK.tick(FPS)
+    DISPLAYSURF.blit(origSurf,(0,0))
+
+def drawButtons():
+    pygame.draw.rect(DISPLAYSURF, YELLOW, YELLOWRECT)
+    pygame.draw.rect(DISPLAYSURF, BLUE, BLUERECT)
+    pygame.draw.rect(DISPLAYSURF, RED, REDRECT)
+    pygame.draw.rect(DISPLAYSURF, GREEN, GREENRECT)
+
+
+
+
+if __name__ == '__main__':
+    main()
