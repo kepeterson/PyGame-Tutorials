@@ -6,7 +6,6 @@ oauth_nonce = 'ce2130523f788f313f76314ed3965ea6'
 oauth_timestamp = '1202956957'
 oauth_consumer_key = keys.CONSUMER_KEY
 oauth_signature_method='plaintext'
-#consumer secret (with %26 at end)
 oauth_signature=keys.CONSUMER_SECRET
 oauth_version='1.0'
 xoauth_lang_pref='"en-us"'
